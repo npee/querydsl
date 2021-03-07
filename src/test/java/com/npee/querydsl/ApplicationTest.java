@@ -24,7 +24,7 @@ class ApplicationTest {
 
     @Test
     public void contextLoads() {
-        Member member = new Member();
+        Member member = new Member(null, 0, null);
         em.persist(member);
 
         JPAQueryFactory query = new JPAQueryFactory(em);
