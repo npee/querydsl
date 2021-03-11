@@ -3,6 +3,7 @@ package com.npee.querydsl;
 import com.npee.querydsl.domain.entity.Member;
 import com.npee.querydsl.domain.entity.QMember;
 import com.npee.querydsl.domain.entity.Team;
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,8 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+
+import java.util.List;
 
 import static com.npee.querydsl.domain.entity.QMember.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -94,6 +97,32 @@ public class QuerydslBasicTest {
                 .fetchOne();
 
         assertThat(findMember.getUsername()).isEqualTo("member1");
+    }
+
+    @Test
+    public void fetchResultTest() {
+        List<Member> fetch = queryFactory
+                .selectFrom(member)
+                .fetch();
+
+        Member fetchOne = queryFactory
+                .selectFrom(member)
+                .fetchOne();
+
+        Member fetchFirst = queryFactory
+                .selectFrom(member)
+                .fetchFirst(); // .limit(1).fetchOne();
+
+        QueryResults<Member> fetchResults = queryFactory
+                .selectFrom(member)
+                .fetchResults();
+
+        List<Member> content = fetchResults.getResults();
+
+
+        long count = queryFactory
+                .selectFrom(member)
+                .fetchCount();
     }
 
 }
