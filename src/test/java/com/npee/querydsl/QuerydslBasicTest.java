@@ -6,6 +6,7 @@ import com.npee.querydsl.domain.entity.QTeam;
 import com.npee.querydsl.domain.entity.Team;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -253,4 +254,17 @@ public class QuerydslBasicTest {
                 .containsExactly("teamA", "teamB");
     }
 
+    @Test
+    public void joinOnFiltering() throws Exception {
+        List<Tuple> result = queryFactory
+                .select(member, team)
+                .from(member)
+                .leftJoin(member.team, team)
+                .on(team.name.eq("teamA"))
+                .fetch();
+
+        for (Tuple tuple : result) {
+            System.out.println("tuple = " + tuple);
+        }
+    }
 }
