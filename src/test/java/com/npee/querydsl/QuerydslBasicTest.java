@@ -1,6 +1,7 @@
 package com.npee.querydsl;
 
 import com.npee.querydsl.domain.dto.MemberDto;
+import com.npee.querydsl.domain.dto.UserDto;
 import com.npee.querydsl.domain.entity.Member;
 import com.npee.querydsl.domain.entity.QMember;
 import com.npee.querydsl.domain.entity.QTeam;
@@ -8,6 +9,7 @@ import com.npee.querydsl.domain.entity.Team;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
@@ -523,6 +525,34 @@ public class QuerydslBasicTest {
 
         for (MemberDto memberDto : result) {
             System.out.println("memberDto = " + memberDto);
+        }
+    }
+    
+    @Test
+    public void findUserDto() throws Exception {
+        List<UserDto> result = queryFactory.select(Projections.fields(UserDto.class,
+                member.username.as("name"), member.age))
+                .from(member)
+                .fetch();
+
+        for (UserDto userDto : result) {
+            System.out.println("userDto = " + userDto);
+        }
+    }
+
+    @Test
+    public void findUserDtoWithSubquery() throws Exception {
+        QMember memberSub = new QMember("memberSub");
+        List<UserDto> result = queryFactory.select(Projections.fields(UserDto.class,
+                member.username.as("name"),
+                ExpressionUtils.as(
+                        JPAExpressions.select(memberSub.age.max())
+                                .from(memberSub), "age")))
+                .from(member)
+                .fetch();
+
+        for (UserDto userDto : result) {
+            System.out.println("userDto = " + userDto);
         }
     }
 }
