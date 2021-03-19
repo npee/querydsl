@@ -1,6 +1,7 @@
 package com.npee.querydsl;
 
 import com.npee.querydsl.domain.dto.MemberDto;
+import com.npee.querydsl.domain.dto.QMemberDto;
 import com.npee.querydsl.domain.dto.UserDto;
 import com.npee.querydsl.domain.entity.Member;
 import com.npee.querydsl.domain.entity.QMember;
@@ -555,4 +556,17 @@ public class QuerydslBasicTest {
             System.out.println("userDto = " + userDto);
         }
     }
+
+    @Test
+    public void findDtoQueryProjection() throws Exception {
+        List<MemberDto> result = queryFactory.select(new QMemberDto(member.username, member.age))
+                .from(member)
+                .fetch();
+
+        for (MemberDto memberDto : result) {
+            System.out.println("memberDto = " + memberDto);
+        }
+    }
+
+
 }
