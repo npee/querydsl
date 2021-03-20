@@ -7,6 +7,7 @@ import com.npee.querydsl.domain.entity.Member;
 import com.npee.querydsl.domain.entity.QMember;
 import com.npee.querydsl.domain.entity.QTeam;
 import com.npee.querydsl.domain.entity.Team;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
@@ -566,6 +567,34 @@ public class QuerydslBasicTest {
         for (MemberDto memberDto : result) {
             System.out.println("memberDto = " + memberDto);
         }
+    }
+
+    @Test
+    public void clause_BooleanBuilder() {
+        String username = "member1";
+        Integer age = null;
+
+        List<Member> result = searchMember(username, age);
+
+        for (Member member1 : result) {
+            System.out.println("member1 = " + member1);
+        }
+    }
+
+    private List<Member> searchMember(String username, Integer age) {
+        BooleanBuilder myBooleanBuilder = new BooleanBuilder();
+
+        if (username != null) {
+            myBooleanBuilder.and(member.username.eq(username));
+        }
+
+        if (age != null) {
+            myBooleanBuilder.and(member.age.eq(age));
+        }
+
+        return queryFactory.selectFrom(member)
+                .where(myBooleanBuilder)
+                .fetch();
     }
 
 
