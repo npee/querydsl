@@ -629,4 +629,39 @@ public class QuerydslBasicTest {
     private BooleanExpression isEqUsernameAndAge(String username, Integer age) {
         return isEqUsername(username).and(isEqAge(age));
     }
+
+    @Test
+    public void bulkUpdate() {
+        long count = queryFactory.update(member)
+                .set(member.age, member.age.add(1))
+                .execute();
+
+        em.flush();
+        em.clear();
+
+        List<Member> result = queryFactory.selectFrom(member)
+                .fetch();
+
+        for (Member member1 : result) {
+            System.out.println("member1 = " + member1);
+        }
+    }
+
+    @Test
+    public void bulkDelete() {
+        long count = queryFactory.delete(member)
+                .where(member.age.loe(30))
+                .execute();
+
+        em.flush();
+        em.clear();
+
+        List<Member> result = queryFactory.selectFrom(member)
+                .fetch();
+
+        for (Member member1 : result) {
+            System.out.println("member1 = " + member1);
+        }
+    }
+
 }
