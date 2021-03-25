@@ -38,4 +38,17 @@ class MemberJpaRepositoryTest {
         List<Member> member1 = memberJpaRepository.findByUsername("member1");
         assertThat(member1).containsExactly(member);
     }
+
+    @Test
+    public void basicQuerydslTest() throws Exception {
+        Member member = new Member("member1", 10);
+        memberJpaRepository.save(member);
+
+        List<Member> all = memberJpaRepository.findAll_Querydsl();
+        assertThat(all).containsExactly(member);
+
+        List<Member> member1 = memberJpaRepository.findByUsername_Querydsl("member1");
+        assertThat(member1).containsExactly(member);
+    }
+
 }
