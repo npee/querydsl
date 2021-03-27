@@ -124,7 +124,6 @@ gradle-app.setting
 ### Application.yml Files
 /src/main/resources/*.yml
 /src/test/resources/*.yml
-!application.yml
 
 # Default
 # application-default.yml
