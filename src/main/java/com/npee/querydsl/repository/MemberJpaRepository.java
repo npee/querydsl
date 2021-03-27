@@ -108,6 +108,18 @@ public class MemberJpaRepository {
                 ).fetch();
     }
 
+    public List<Member> searchMemberOnly(MemberSearchCondition condition) {
+        return queryFactory.selectFrom(member)
+                .leftJoin(member.team, team)
+                .where(
+                        usernameEq(condition.getUsername()),
+                        teamNameEq(condition.getTeamName()),
+                        ageGoe(condition.getAgeGoe()),
+                        ageLoe(condition.getAgeLoe())
+                ).fetch();
+    }
+
+
     private BooleanExpression usernameEq(String username) {
         return !hasText(username) ? null : member.username.eq(username);
     }
