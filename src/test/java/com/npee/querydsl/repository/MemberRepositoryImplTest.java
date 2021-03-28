@@ -81,11 +81,11 @@ class MemberRepositoryImplTest {
 
         MemberSearchCondition condition = new MemberSearchCondition();
 
-        PageRequest pageRequest = PageRequest.of(0, 3);
+        PageRequest pageRequest = PageRequest.of(0, 10);
 
-        Page<MemberTeamDto> result = memberRepository.searchPageSimple(condition, pageRequest);
+        Page<MemberTeamDto> result = memberRepository.searchPageComplex(condition, pageRequest);
 
-        assertThat(result.getSize()).isEqualTo(3);
-        assertThat(result.getContent()).extracting("username").containsExactly("member1", "member2", "member3");
+        assertThat(result.getSize()).isEqualTo(10);
+        // assertThat(result.getContent()).extracting("username").containsExactly("member1", "member2", "member3");
     }
 }
