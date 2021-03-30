@@ -50,6 +50,18 @@ public class MemberTestRepository extends Querydsl4RepositorySupport {
         return PageableExecutionUtils.getPage(content, pageable, query::fetchCount);
     }
 
+    public Page<Member> applyPagination(MemberSearchCondition condition, Pageable pageable) {
+        return applyPagination(pageable, query -> query
+                .selectFrom(QMember.member)
+                .where(
+                        usernameEq(condition.getUsername()),
+                        teamNameEq(condition.getTeamName()),
+                        ageGoe(condition.getAgeGoe()),
+                        ageLoe(condition.getAgeLoe())
+                )
+        );
+    }
+
     private BooleanExpression usernameEq(String username) {
         return !hasText(username) ? null : member.username.eq(username);
     }
