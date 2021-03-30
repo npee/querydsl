@@ -3,6 +3,7 @@ package com.npee.querydsl.repository;
 import com.npee.querydsl.domain.dto.MemberSearchCondition;
 import com.npee.querydsl.domain.entity.Member;
 import com.npee.querydsl.domain.entity.QMember;
+import com.npee.querydsl.domain.entity.QTeam;
 import com.npee.querydsl.repository.support.Querydsl4RepositorySupport;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
@@ -38,6 +39,7 @@ public class MemberTestRepository extends Querydsl4RepositorySupport {
 
     public Page<Member> searchPageByApplyPage(MemberSearchCondition condition, Pageable pageable) {
         JPAQuery<Member> query = selectFrom(member)
+                .leftJoin(member.team, team)
                 .where(
                         usernameEq(condition.getUsername()),
                         teamNameEq(condition.getTeamName()),
@@ -53,6 +55,7 @@ public class MemberTestRepository extends Querydsl4RepositorySupport {
     public Page<Member> applyPagination(MemberSearchCondition condition, Pageable pageable) {
         return applyPagination(pageable, query -> query
                 .selectFrom(QMember.member)
+                .leftJoin(member.team, team)
                 .where(
                         usernameEq(condition.getUsername()),
                         teamNameEq(condition.getTeamName()),
@@ -61,6 +64,8 @@ public class MemberTestRepository extends Querydsl4RepositorySupport {
                 )
         );
     }
+
+
 
     private BooleanExpression usernameEq(String username) {
         return !hasText(username) ? null : member.username.eq(username);
