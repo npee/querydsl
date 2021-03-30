@@ -3,6 +3,7 @@ package com.npee.querydsl.repository;
 import com.npee.querydsl.domain.dto.MemberSearchCondition;
 import com.npee.querydsl.domain.dto.MemberTeamDto;
 import com.npee.querydsl.domain.entity.Member;
+import com.npee.querydsl.domain.entity.QMember;
 import com.npee.querydsl.domain.entity.Team;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,5 +68,34 @@ class MemberRepositoryTest {
         List<MemberTeamDto> result = memberRepository.search(condition);
 
         assertThat(result).extracting("username").containsExactly("member4");
+    }
+
+    @Test
+    public void querydslPredicateExecutorTest() {
+
+        Team team1 = new Team("teamA");
+        Team team2 = new Team("teamB");
+
+        em.persist(team1);
+        em.persist(team2);
+
+        Member member1 = new Member("member1", 10, team1);
+        Member member2 = new Member("member2", 20, team1);
+        Member member3 = new Member("member3", 30, team2);
+        Member member4 = new Member("member4", 40, team2);
+
+        em.persist(member1);
+        em.persist(member2);
+        em.persist(member3);
+        em.persist(member4);
+
+        em.flush();
+        em.clear();
+
+        QMember member = QMember.member;
+        Iterable<Member> results = memberRepository.findAll(member.age.between(20, 40).and(member.username.eq("member1")));
+        for (Member result : results) {
+            System.out.println("result = " + result);
+        }
     }
 }
