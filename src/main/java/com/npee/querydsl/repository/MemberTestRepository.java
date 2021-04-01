@@ -54,7 +54,29 @@ public class MemberTestRepository extends Querydsl4RepositorySupport {
 
     public Page<Member> applyPagination(MemberSearchCondition condition, Pageable pageable) {
         return applyPagination(pageable, query -> query
-                .selectFrom(QMember.member)
+                .selectFrom(member)
+                .leftJoin(member.team, team)
+                .where(
+                        usernameEq(condition.getUsername()),
+                        teamNameEq(condition.getTeamName()),
+                        ageGoe(condition.getAgeGoe()),
+                        ageLoe(condition.getAgeLoe())
+                )
+        );
+    }
+
+    public Page<Member> applyPaginationAdvanced(MemberSearchCondition condition, Pageable pageable) {
+        return applyPagination(pageable, contentQuery -> contentQuery
+                .selectFrom(member)
+                .leftJoin(member.team, team)
+                .where(
+                        usernameEq(condition.getUsername()),
+                        teamNameEq(condition.getTeamName()),
+                        ageGoe(condition.getAgeGoe()),
+                        ageLoe(condition.getAgeLoe())
+                ), countQuery -> countQuery
+                .select(member.id)
+                .from(member)
                 .leftJoin(member.team, team)
                 .where(
                         usernameEq(condition.getUsername()),
